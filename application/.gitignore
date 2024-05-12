@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# update file changes: git rm -r --cached .
+config.js
+
 # dependencies
 /node_modules
 /.pnp
@@ -23,7 +26,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
 # local env files
 .env*.local
