@@ -1,0 +1,59 @@
+version: "3.0"
+services:
+    # MongoDB
+    mongodb:
+        # name the container to find it later
+        container_name: foodfinder-mongodb
+        # use the precompiled official mongo image from the docker registry
+        image: mongodb
+        build:
+            context: ./mongodb
+            dockerfile: Dockerfile
+        restart: always
+        environment:
+            # configure database name
+            DB_NAME: foodfinder
+            # configure database name for the seed script
+            MONGO_INITDB_DATABASE: foodfinder
+        # configure ports, the mongoDB should be available at localhost:27017
+        ports:
+            - 27017:27017
+        # sync files between host and container
+        volumes:
+            # map seed script
+            # map mongoDB database to a shared volume to persist the data
+            - mongodb_data_container:/data/db
+
+    # front end with node.js and next.js
+    application:
+        # name the container to find it later
+        build: 
+            context: ./application
+            dockerfile: Dockerfile-dev
+        container_name: foodfinder-application
+        # image: node:lts-alpine
+        # configure working directory for installing next.js
+        # working_dir: /home/node/code/
+        # configure working directory for running the application
+        working_dir: /home/node/application
+        # configure ports, map the container port to the host’s. the application listens to port 3000 (container) and is available at localhost:3000 (host) 
+        ports:
+            - "3000:3000"
+        # sync files between host and container
+        volumes:
+            # map current directory to the working directory
+            - ./application:/home/node/application
+        # this container depends on a running mongodb container
+        depends_on:
+            - mongodb
+        environment:
+            # set node environment to development
+            # - NODE_ENV=development
+            # configure hot reloading
+            - HOST=0.0.0.0
+            - CHOKIDAR_USEPOLLING=true
+            - CHOKIDAR_INTERVAL=100
+    
+# configure data and node modules as shared volumes 
+volumes:
+    mongodb_data_container:

@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The Header component renders unchanged when logged in 1`] = `
+<div>
+  <header
+    class="root"
+  >
+    <div
+      class="layout-grid"
+    >
+      <a
+        class="root"
+        href="/"
+      >
+        <img
+          alt="Logo: Food Finder"
+          data-nimg="fill"
+          decoding="async"
+          sizes="100vw"
+          src="/_next/image?url=%2Fimg.jpg&w=3840&q=75"
+          srcset="/_next/image?url=%2Fimg.jpg&w=640&q=75 640w, /_next/image?url=%2Fimg.jpg&w=750&q=75 750w, /_next/image?url=%2Fimg.jpg&w=828&q=75 828w, /_next/image?url=%2Fimg.jpg&w=1080&q=75 1080w, /_next/image?url=%2Fimg.jpg&w=1200&q=75 1200w, /_next/image?url=%2Fimg.jpg&w=1920&q=75 1920w, /_next/image?url=%2Fimg.jpg&w=2048&q=75 2048w, /_next/image?url=%2Fimg.jpg&w=3840&q=75 3840w"
+          style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px; right: 0px; bottom: 0px; color: transparent;"
+        />
+      </a>
+      <span
+        class="name"
+      >
+        Hi 
+        <b>
+          test user
+        </b>
+      </span>
+      <nav
+        class="root"
+      >
+        <div
+          class="root  outline"
+        >
+          <span
+            class="span"
+          >
+            <a
+              href="/list/rndmusr"
+            >
+              Your wish list
+            </a>
+          </span>
+        </div>
+        <div
+          class="root  blue"
+        >
+          <span
+            class="span"
+          >
+            Sign out
+          </span>
+        </div>
+      </nav>
+    </div>
+  </header>
+</div>
+`;
+
+exports[`The Header component renders unchanged when logged out 1`] = `
+<div>
+  <header
+    class="root"
+  >
+    <div
+      class="layout-grid"
+    >
+      <a
+        class="root"
+        href="/"
+      >
+        <img
+          alt="Logo: Food Finder"
+          data-nimg="fill"
+          decoding="async"
+          sizes="100vw"
+          src="/_next/image?url=%2Fimg.jpg&w=3840&q=75"
+          srcset="/_next/image?url=%2Fimg.jpg&w=640&q=75 640w, /_next/image?url=%2Fimg.jpg&w=750&q=75 750w, /_next/image?url=%2Fimg.jpg&w=828&q=75 828w, /_next/image?url=%2Fimg.jpg&w=1080&q=75 1080w, /_next/image?url=%2Fimg.jpg&w=1200&q=75 1200w, /_next/image?url=%2Fimg.jpg&w=1920&q=75 1920w, /_next/image?url=%2Fimg.jpg&w=2048&q=75 2048w, /_next/image?url=%2Fimg.jpg&w=3840&q=75 3840w"
+          style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px; right: 0px; bottom: 0px; color: transparent;"
+        />
+      </a>
+      <nav
+        class="root"
+      >
+        <div
+          class="root  blue"
+        >
+          <span
+            class="span"
+          >
+            Sign in
+          </span>
+        </div>
+      </nav>
+    </div>
+  </header>
+</div>
+`;

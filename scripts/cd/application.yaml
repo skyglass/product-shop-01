@@ -1,0 +1,52 @@
+#
+# To deploy:
+#
+# kubectl apply -f scripts/deploy.yaml
+#
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: application
+  template:
+    metadata:
+      labels:
+        app: application
+    spec:
+      containers: 
+      - name: application
+        image: $CONTAINER_REGISTRY/application:$VERSION
+        imagePullPolicy: Always
+        env:
+        - name: CHOKIDAR_USEPOLLING
+          value: "true"
+        - name: CHOKIDAR_INTERVAL
+          value: "100"
+        - name: MONGO_URI
+          value: "mongodb://mongodb:27017/foodfinder"
+        - name: GITHUB_CLIENT_ID
+          value: "$AUTH_CLIENT_ID"
+        - name: GITHUB_CLIENT_SECRET
+          value: "$AUTH_CLIENT_SECRET"
+        - name: NEXTAUTH_SECRET
+          value: "60477026caac35080b244a879eb84873"
+        - name: NEXTAUTH_URL
+          value: "http://172.211.209.153"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: application
+spec:
+  selector:
+    app: application
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000

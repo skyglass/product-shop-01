@@ -1,0 +1,93 @@
+.root {
+    align-items: center;
+    border-radius: 5px;
+    color: #1d1f21;
+    cursor: pointer;
+    display: inline-flex;
+    font-weight: 500;
+    height: 38px;
+    letter-spacing: 0;
+    margin: 0;
+    overflow: hidden;
+    place-content: flex-start;
+    position: relative;
+    white-space: nowrap;
+}
+
+.root > a,
+.root > span {
+    padding: 0 1rem;
+    white-space: nowrap;
+}
+
+.root {
+    transition: border-color 0.25s ease-in, background-color 0.25s ease-in,
+        color 0.25s ease-in;
+    will-change: border-color, background-color, color;
+}
+
+.root.default,
+.root.default:link,
+.root.default:visited {
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: #1d1f21;
+}
+
+.root.default:hover,
+.root.default:active {
+    background-color: transparent;
+    border: 1px solid #dbd8e3;
+    color: #1d1f21;
+}
+
+.root.blue,
+.root.blue:link,
+.root.blue:visited {
+    background-color: rgba(0, 118, 255, 0.9);
+    border: 1px solid rgba(0, 118, 255, 0.9);
+    color: #fff;
+    text-decoration: none;
+}
+
+.root.blue:hover,
+.root.blue:active {
+    background-color: transparent;
+    border: 1px solid #1d1f21;
+    color: #1d1f21;
+    text-decoration: none;
+}
+
+.root.outline,
+.root.outline:link,
+.root.outline:visited {
+    background-color: transparent;
+    border: 1px solid #dbd8e3;
+    color: #1d1f21;
+    text-decoration: none;
+}
+
+.root.outline:hover,
+.root.outline:active {
+    background-color: transparent;
+    border: 1px solid rgba(0, 118, 255, 0.9);
+    color: rgba(0, 118, 255, 0.9);
+    text-decoration: none;
+}
+
+.root.disabled,
+.root.disabled:link,
+.root.disabled:visited {
+    background-color: transparent;
+    border: 1px solid #dbd8e3;
+    color: #dbd8e3;
+    text-decoration: none;
+}
+
+.root.disabled:hover,
+.root.disabled:active {
+    background-color: transparent;
+    border: 1px solid #dbd8e3;
+    color: #dbd8e3;
+    text-decoration: none;
+}
