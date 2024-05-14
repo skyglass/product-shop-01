@@ -95,9 +95,6 @@ export default function TopNav() {
           <Link className="nav-link" href="/login">
             Login
           </Link>
-          <Link className="nav-link" href="/register">
-            Register
-          </Link>
         </div>
       )}
     </nav>

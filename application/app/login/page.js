@@ -42,29 +42,6 @@ export default function Login() {
           <div className="col-lg-5 bg-light p-5 shadow">
             <h2 className="mb-3">Login</h2>
 
-            <form onSubmit={handleSubmit}>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="form-control mb-3"
-                placeholder="Your email"
-              />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="form-control mb-3"
-                placeholder="Your password"
-              />
-              <button
-                className="btn btn-primary btn-raised"
-                disabled={loading || !email || !password}
-              >
-                {loading ? "Please wait.." : "Submit"}
-              </button>
-            </form>
-
             <div className="d-flex justify-content-between">
               <button
                 className="btn btn-danger btn-raised mb-4"
@@ -72,10 +49,6 @@ export default function Login() {
               >
                 Sign in with Google
               </button>
-
-              <Link className="btn mb-4" href="/forgot-password">
-                <small>Forgot Password</small>
-              </Link>
             </div>
           </div>
         </div>

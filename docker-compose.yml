@@ -3,7 +3,7 @@ services:
     # MongoDB
     mongodb:
         # name the container to find it later
-        container_name: foodfinder-mongodb
+        container_name: productshop-mongodb
         # use the precompiled official mongo image from the docker registry
         image: mongodb
         build:
@@ -12,9 +12,9 @@ services:
         restart: always
         environment:
             # configure database name
-            DB_NAME: foodfinder
+            DB_NAME: productshop
             # configure database name for the seed script
-            MONGO_INITDB_DATABASE: foodfinder
+            MONGO_INITDB_DATABASE: productshop
         # configure ports, the mongoDB should be available at localhost:27017
         ports:
             - 27017:27017
@@ -30,7 +30,7 @@ services:
         build: 
             context: ./application
             dockerfile: Dockerfile-dev
-        container_name: foodfinder-application
+        container_name: productshop-application
         # image: node:lts-alpine
         # configure working directory for installing next.js
         # working_dir: /home/node/code/
