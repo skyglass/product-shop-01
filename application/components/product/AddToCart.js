@@ -1,19 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useCart } from "@/context/cart";
+import { useCart } from "context/cart";
 import Link from "next/link";
 
 export default function AddToCart({ product, reviewAndCheckout = true }) {
-  const { addToCart, updateQuantity, cartItems, removeFromCart } = useCart();
+  const { addToCart, updateQuantity, removeFromCart, cartItems } = useCart();
 
-  // Find the product in cartItems, if it exists
-  const existingProduct = cartItems.find((item) => item?._id === product?._id);
+  // find the product in cartItems if it exist
+  const existingProduct = cartItems?.find((item) => item?._id === product?._id);
   const initialQuantity = existingProduct ? existingProduct?.quantity : 1;
 
   const [quantity, setQuantity] = useState(initialQuantity);
 
   useEffect(() => {
-    // Update quantity state if the product's quantity changes in cartItems
     setQuantity(existingProduct ? existingProduct?.quantity : 1);
   }, [existingProduct]);
 
@@ -29,9 +28,8 @@ export default function AddToCart({ product, reviewAndCheckout = true }) {
       setQuantity(newQuantity);
       updateQuantity(product, newQuantity);
     } else {
-      // If quantity becomes 0, remove the item from the cart
-      removeFromCart(product?._id);
-      setQuantity(1); // Reset quantity to 1 after removing from cart
+      removeFromCart(product._id);
+      setQuantity(1);
     }
   };
 
@@ -41,33 +39,31 @@ export default function AddToCart({ product, reviewAndCheckout = true }) {
 
   return (
     <div>
-      {cartItems.some((item) => item?._id === product?._id) ? (
-        <>
-          <div className="input-group quantity-input">
-            <div className="input-group-prepend">
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                onClick={handleDecrement}
-              >
-                -
-              </button>
-            </div>
+      {cartItems?.some((item) => item?._id === product?._id) ? (
+        <div>
+          <div className="d-flex justify-content-between">
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={handleDecrement}
+            >
+              -
+            </button>
+
             <input
               type="number"
               className="form-control no-spin-arrows mx-5 text-center"
               value={quantity}
               onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
             />
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                onClick={handleIncrement}
-              >
-                +
-              </button>
-            </div>
+
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={handleIncrement}
+            >
+              +
+            </button>
           </div>
 
           {reviewAndCheckout && (
@@ -78,7 +74,7 @@ export default function AddToCart({ product, reviewAndCheckout = true }) {
               Review & Checkout
             </Link>
           )}
-        </>
+        </div>
       ) : (
         <button
           className="btn btn-danger btn-raised btn-block"

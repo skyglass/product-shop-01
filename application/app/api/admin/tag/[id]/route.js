@@ -1,45 +1,34 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
 import Tag from "@/models/tag";
+import slugify from "slugify";
 
 export async function PUT(req, context) {
   await dbConnect();
-
-  const _req = await req.json();
+  const body = await req.json();
+  const { name } = body;
 
   try {
     const updatingTag = await Tag.findByIdAndUpdate(
       context.params.id,
-      { ..._req },
+      {
+        ...body,
+        slug: slugify(name),
+      },
       { new: true }
     );
-
-    return NextResponse.json(updatingTag, { status: 200 });
+    return NextResponse.json(updatingTag);
   } catch (err) {
-    console.log(err);
-    return NextResponse.json(
-      {
-        err: err.message,
-      },
-      { status: 500 }
-    );
+    return NextResponse.json(err.message, { status: 500 });
   }
 }
 
 export async function DELETE(req, context) {
   await dbConnect();
-
   try {
-    const deletedTag = await Tag.findByIdAndDelete(context.params.id);
-
-    return NextResponse.json(deletedTag, { status: 200 });
+    const deletingTag = await Tag.findByIdAndDelete(context.params.id);
+    return NextResponse.json(deletingTag);
   } catch (err) {
-    console.log(err);
-    return NextResponse.json(
-      {
-        err: err.message,
-      },
-      { status: 500 }
-    );
+    return NextResponse.json(err.message, { status: 500 });
   }
 }

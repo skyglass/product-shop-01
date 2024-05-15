@@ -5,8 +5,11 @@ import toast from "react-hot-toast";
 export const CategoryContext = createContext();
 
 export const CategoryProvider = ({ children }) => {
+  // to create a category
   const [name, setName] = useState("");
+  // for fetching all categories
   const [categories, setCategories] = useState([]);
+  // for update and delete
   const [updatingCategory, setUpdatingCategory] = useState(null);
 
   const createCategory = async () => {
@@ -16,50 +19,61 @@ export const CategoryProvider = ({ children }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name,
-        }),
+        body: JSON.stringify({ name }),
       });
 
-      if (response.ok) {
-        toast.success("Category created successfully");
-        const newlyCreatedCategory = await response.json();
-        setName("");
-        setCategories([newlyCreatedCategory, ...categories]);
+      const data = await response.json();
+
+      if (!response.ok) {
+        // console.log("data.err", data);
+        toast.error(data);
       } else {
-        const errorData = await response.json();
-        toast.error(errorData.err);
+        toast.success("Category created");
+        setName("");
+        setCategories([data, ...categories]);
       }
     } catch (err) {
-      console.log("err => ", err);
-      toast.error("An error occurred while creating the category");
+      console.log(err);
+      toast.error("An error occurred. Try again");
     }
   };
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${process.env.API}/categories`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(`${process.env.API}/admin/category`);
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        toast.error(data);
+      } else {
+        setCategories(data);
       }
+    } catch (err) {
+      console.log(err);
+      toast.error("An error occurred. Try again");
+    }
+  };
 
+  const fetchCategoriesPublic = async () => {
+    try {
+      const response = await fetch(`${process.env.API}/categories`);
       const data = await response.json();
-      setCategories(data);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
+
+      if (!response.ok) {
+        toast.error(data);
+      } else {
+        setCategories(data);
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("An error occurred. Try again");
     }
   };
 
   const updateCategory = async () => {
     try {
       const response = await fetch(
-        `${process.env.API}/admin/category/${updatingCategory._id}`,
+        `${process.env.API}/admin/category/${updatingCategory?._id}`,
         {
           method: "PUT",
           headers: {
@@ -69,56 +83,49 @@ export const CategoryProvider = ({ children }) => {
         }
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        toast.error(data);
+      } else {
+        toast.success("Category updated");
+        setUpdatingCategory(null);
+        setCategories(
+          categories.map((category) =>
+            category._id === updatingCategory._id ? data : category
+          )
+        );
+        setUpdatingCategory(null);
       }
-
-      const updatedCategory = await response.json();
-
-      // Update the categories state with the updated category
-      setCategories((prevCategories) =>
-        prevCategories.map((c) =>
-          c._id === updatedCategory._id ? updatedCategory : c
-        )
-      );
-
-      // Clear the categoryUpdate state
-      setUpdatingCategory(null);
-
-      toast.success("Category updated successfully");
     } catch (err) {
-      console.log("err => ", err);
-      toast.error("An error occurred while updating the category");
+      console.log(err);
+      toast.error("An error occurred. Try again");
     }
   };
 
   const deleteCategory = async () => {
     try {
       const response = await fetch(
-        `${process.env.API}/admin/category/${updatingCategory._id}`,
+        `${process.env.API}/admin/category/${updatingCategory?._id}`,
         {
           method: "DELETE",
         }
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        toast.error(data);
+      } else {
+        toast.success("Category deleted");
+        setCategories(
+          categories.filter((category) => category._id !== updatingCategory._id)
+        );
+        setUpdatingCategory(null);
       }
-
-      const deletedCategory = await response.json();
-
-      // Category deleted successfully, now update the categories state
-      setCategories((prevCategories) =>
-        prevCategories.filter((c) => c._id !== deletedCategory._id)
-      );
-
-      // Clear the categoryUpdate state
-      setUpdatingCategory(null);
-
-      toast.success("Category deleted successfully");
     } catch (err) {
-      console.log("err => ", err);
-      toast.error("An error occurred while deleting the category");
+      console.log(err);
+      toast.error("An error occurred. Try again");
     }
   };
 
@@ -127,12 +134,13 @@ export const CategoryProvider = ({ children }) => {
       value={{
         name,
         setName,
-        createCategory,
         categories,
         setCategories,
-        fetchCategories,
         updatingCategory,
         setUpdatingCategory,
+        createCategory,
+        fetchCategories,
+        fetchCategoriesPublic,
         updateCategory,
         deleteCategory,
       }}

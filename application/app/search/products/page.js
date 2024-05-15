@@ -1,47 +1,43 @@
 "use client";
 import { useEffect } from "react";
-import ProductList from "@/components/product/ProductList";
+import ProductCard from "@/components/product/ProductCard";
 import { useSearchParams } from "next/navigation";
 import { useProduct } from "@/context/product";
 
-export default function ProductsSearchPage() {
-  // context
+export default function SearchProductsPage() {
   const {
     setProductSearchQuery,
-    productSearchResults,
     setProductSearchResults,
+    productSearchResults,
   } = useProduct();
-  // console.log("searchQuery in search page =====> ", searchQuery);
 
   const productSearchParams = useSearchParams();
   const query = productSearchParams.get("productSearchQuery");
 
-  // to fetch results on page load based on query
   useEffect(() => {
     if (query) {
-      console.log(
-        "Got search params in search page => ",
-        productSearchParams.get("productSearchQuery")
-      );
       setProductSearchQuery(query);
       fetchProductResultsOnLoad(query);
     }
   }, [query]);
 
-  const fetchProductResultsOnLoad = async () => {
+  const fetchProductResultsOnLoad = async (query) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/search/products?productSearchQuery=${query}`
+        `${process.env.API}/search/products?productSearchQuery=${query}`,
+        {
+          method: "GET",
+        }
       );
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Network response was not ok for search results");
       }
-
       const data = await response.json();
+      console.log("search results data => ", data);
       setProductSearchResults(data);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -49,13 +45,17 @@ export default function ProductsSearchPage() {
     <div className="container">
       <div className="row">
         <div className="col">
-          <p>Search result {productSearchResults?.length}</p>
-          {/* <pre>{JSON.stringify(searchResults, null, 4)}</pre> */}
-          {productSearchResults ? (
-            <ProductList products={productSearchResults} />
-          ) : (
-            ""
-          )}
+          <h4>Search Results {productSearchResults?.length}</h4>
+
+          <hr />
+
+          <div className="row">
+            {productSearchResults?.map((product) => (
+              <div key={product?._id} className="col-lg-4">
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

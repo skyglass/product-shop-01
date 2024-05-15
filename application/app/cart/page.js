@@ -1,26 +1,20 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
+import Step1 from "@/components/cart/Step1";
+import Step2 from "@/components/cart/Step2";
+import Step3 from "@/components/cart/Step3";
 import { GoCheckCircleFill } from "react-icons/go";
-import Step1 from "@/components/product/cart/Step1";
-import Step2 from "@/components/product/cart/Step2";
-import Step3 from "@/components/product/cart/Step3";
+import Link from "next/link";
 import { useCart } from "@/context/cart";
 
 export default function Cart() {
   // context
   const { cartItems } = useCart();
-
   // state
   const [step, setStep] = useState(1);
 
-  const handleNextStep = () => {
-    setStep(step + 1);
-  };
-
-  const handlePrevStep = () => {
-    setStep(step - 1);
-  };
+  const handleNextStep = () => setStep(step + 1);
+  const handlePrevStep = () => setStep(step - 1);
 
   const tickIcon = (stepNumber) => {
     return step === stepNumber ? (
@@ -28,17 +22,18 @@ export default function Cart() {
     ) : null;
   };
 
-  if (!cartItems?.length)
+  if (!cartItems?.length) {
     return (
       <div className="container d-flex justify-content-center align-items-center vh-100">
         <div className="text-center">
           <p className="lead">Your cart is empty!</p>
-          <Link className="btn btn-lg btn-primary btn-raised" href="/products">
+          <Link className="btn btn-lg btn-primary btn-raised" href="/shop">
             Continue Shopping
           </Link>
         </div>
       </div>
     );
+  }
 
   return (
     <div>
@@ -52,7 +47,7 @@ export default function Cart() {
 
       {step === 1 && <Step1 onNextStep={handleNextStep} />}
       {step === 2 && (
-        <Step2 onNextStep={handleNextStep} onPrevStep={handlePrevStep} />
+        <Step2 onPrevStep={handlePrevStep} onNextStep={handleNextStep} />
       )}
       {step === 3 && <Step3 onPrevStep={handlePrevStep} />}
     </div>

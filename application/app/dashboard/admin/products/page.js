@@ -1,12 +1,12 @@
-"use client";
-import ProductList from "@/components/product/admin/ProductList";
+import ProductList from "@/components/admin/ProductList";
 
-export default function AddProduct() {
+export default function AdminProductsList() {
   return (
-    <div className="container mb-5">
+    <div className="container">
       <div className="row">
         <div className="col">
-          <p className="lead mb-4 text-center">List of Products</p>
+          <p className="lead">List of products</p>
+          <hr />
           <ProductList />
         </div>
       </div>

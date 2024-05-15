@@ -1,11 +1,9 @@
-import ProductList from "@/components/product/ProductList";
-import Pagination from "@/components/Pagination";
-
-export const dynamic = "force-dynamic";
+import Pagination from "@/components/product/Pagination";
+import ProductCard from "@/components/product/ProductCard";
 
 export const metadata = {
   title: "Next Ecommerce",
-  description: "Find the latest in fashion, electronics and more",
+  description: "Find the latest in fashion, electronics, and more!",
 };
 
 async function getProducts(searchParams) {
@@ -13,57 +11,42 @@ async function getProducts(searchParams) {
     page: searchParams?.page || 1,
   }).toString();
 
-  try {
-    const response = await fetch(`${process.env.API}/product?${searchQuery}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      next: { revalidate: 1 },
-      // next: { cache: "no-store" },
-    });
+  const response = await fetch(`${process.env.API}/product?${searchQuery}`, {
+    method: "GET",
+    next: { revalidate: 1 },
+  });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch products: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    // Check if the response has products or is empty
-    if (!data || !Array.isArray(data.products)) {
-      throw new Error("No products returned.");
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Error fetching search results:", error);
-    // Handle the error here, such as showing an error message to the user
-    // or returning a default value
-    return { products: [], currentPage: 1, totalPages: 1 };
+  if (!response.ok) {
+    throw new Error("Failed to fetch products");
   }
+
+  const data = await response.json();
+  return data;
 }
 
-export default async function Prducts({ searchParams }) {
-  // console.log("searchParams in products page => ", searchParams);
-  const data = await getProducts(searchParams);
+export default async function Home({ searchParams }) {
+  // console.log("searchParams => ", searchParams);
+  const { products, currentPage, totalPages } = await getProducts(searchParams);
 
   return (
-    <main>
-      <div className="container">
-        <div className="row">
-          <div className="col">
-            <p className="text-center lead fw-bold">Latest Products</p>
-            <ProductList products={data?.products} />
-          </div>
-        </div>
+    <div className="container">
+      <h1 className="text-center mt-4">
+        <strong>Latest Products</strong>
+      </h1>
 
-        <Pagination
-          currentPage={data?.currentPage}
-          totalPages={data?.totalPages}
-          pathname="/shop"
-          searchParams={searchParams}
-        />
+      <div className="row">
+        {products?.map((product) => (
+          <div className="col-lg-4">
+            <ProductCard product={product} />
+          </div>
+        ))}
       </div>
-    </main>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pathname="/"
+      />
+    </div>
   );
 }

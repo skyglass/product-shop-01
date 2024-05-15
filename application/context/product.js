@@ -1,41 +1,48 @@
 "use client";
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
-import Resizer from "react-image-file-resizer";
 import { useRouter } from "next/navigation";
+import Resizer from "react-image-file-resizer";
 
 export const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
+  // State
   const [product, setProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [updatingProduct, setUpdatingProduct] = useState(null);
   const [uploading, setUploading] = useState(false);
-  // modal for image preview
+  // image preview modal
   const [showImagePreviewModal, setShowImagePreviewModal] = useState(false);
   const [currentImagePreviewUrl, setCurrentImagePreviewUrl] = useState("");
-  // modal for rating
+  // rating system
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [currentRating, setCurrentRating] = useState(0);
   const [comment, setComment] = useState("");
   // brands
   const [brands, setBrands] = useState([]);
-  // text search
+  // text based search
   const [productSearchQuery, setProductSearchQuery] = useState("");
   const [productSearchResults, setProductSearchResults] = useState([]);
 
   const router = useRouter();
 
   useEffect(() => {
+    // close modal on clicks on the page
     window.addEventListener("click", handleClickOutside);
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
+
+    function handleClickOutside(event) {
+      if (event.target.classList.contains("modal")) {
+        closeModal();
+      }
+    }
   }, []);
 
-  // modal for image preview and ratings
   const openImagePreviewModal = (url) => {
     setCurrentImagePreviewUrl(url);
     setShowImagePreviewModal(true);
@@ -43,47 +50,24 @@ export const ProductProvider = ({ children }) => {
 
   const closeModal = () => {
     setShowImagePreviewModal(false);
+    setCurrentImagePreviewUrl("");
     setShowRatingModal(false);
   };
 
-  const handleClickOutside = (event) => {
-    if (event.target.classList.contains("modal")) {
-      closeModal();
-    }
-  };
-
-  const fetchProductSearchResults = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(
-        `${process.env.API}/search/products?productSearchQuery=${productSearchQuery}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      setProductSearchResults(data);
-      // console.log("search results => ", data);
-      router.push(`/search/products?productSearchQuery=${productSearchQuery}`);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
-    }
-  };
-
   const uploadImages = (e) => {
-    let files = e.target.files;
+    const files = e.target.files;
 
     let allUploadedFiles = updatingProduct
-      ? updatingProduct.images || []
+      ? updatingProduct?.images || []
       : product
-      ? product.images || []
+      ? product?.images || []
       : [];
 
     if (files) {
-      // Check if the total combined images exceed 10
-      const totalImages = allUploadedFiles.length + files.length;
+      // check if the total combined images exceed 4
+      const totalImages = allUploadedFiles?.length + files?.length;
       if (totalImages > 4) {
-        alert("You can't upload more than 4 images.");
+        toast.error("You can upload maximum 4 images");
         return;
       }
 
@@ -92,6 +76,7 @@ export const ProductProvider = ({ children }) => {
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
+
         const promise = new Promise((resolve) => {
           Resizer.imageFileResizer(
             file,
@@ -103,44 +88,36 @@ export const ProductProvider = ({ children }) => {
             (uri) => {
               fetch(`${process.env.API}/admin/upload/image`, {
                 method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
                 body: JSON.stringify({ image: uri }),
               })
                 .then((response) => response.json())
                 .then((data) => {
-                  // Insert the new image at the beginning of the array
                   allUploadedFiles.unshift(data);
-
                   resolve();
                 })
                 .catch((err) => {
-                  console.log("CLOUDINARY UPLOAD ERR", err);
+                  console.log("image upload err => ", err);
                   resolve();
                 });
             },
             "base64"
           );
         });
-
         uploadPromises.push(promise);
       }
 
       Promise.all(uploadPromises)
         .then(() => {
-          // Update the state after all images are uploaded
           updatingProduct
             ? setUpdatingProduct({
                 ...updatingProduct,
                 images: allUploadedFiles,
               })
             : setProduct({ ...product, images: allUploadedFiles });
-
           setUploading(false);
         })
-        .catch((error) => {
-          console.log("Error uploading images: ", error);
+        .catch((err) => {
+          console.log("image upload err => ", err);
           setUploading(false);
         });
     }
@@ -150,141 +127,64 @@ export const ProductProvider = ({ children }) => {
     setUploading(true);
     fetch(`${process.env.API}/admin/upload/image`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({ public_id }),
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log("IMAGE DELETE RES DATA", data);
         const filteredImages = updatingProduct
-          ? updatingProduct.images.filter(
-              (image) => image.public_id !== public_id
+          ? updatingProduct?.images?.filter(
+              (image) => image?.public_id !== public_id
             )
-          : product.images.filter((image) => image.public_id !== public_id);
+          : product?.images?.filter((image) => image?.public_id !== public_id);
 
         updatingProduct
-          ? setUpdatingProduct({
-              ...updatingProduct,
-              images: filteredImages,
-            })
+          ? setUpdatingProduct({ ...updatingProduct, images: filteredImages })
           : setProduct({ ...product, images: filteredImages });
       })
       .catch((err) => {
-        toast.error("Image delete failed");
-        console.log("CLOUDINARY DELETE ERR", err);
+        console.log("image delete err => ", err);
       })
-      .finally(() => {
-        setUploading(false);
-      });
+      .finally(() => setUploading(false));
   };
 
   const createProduct = async () => {
     try {
       const response = await fetch(`${process.env.API}/admin/product`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...product,
-        }),
+        body: JSON.stringify(product),
       });
 
-      if (response.ok) {
-        const newlyCreatedProduct = await response.json();
-        toast.success(`Product "${newlyCreatedProduct?.title}" created!`);
-        router.push("/dashboard/admin/products");
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.err);
       } else {
-        const errorData = await response.json();
-        toast.error(errorData.err);
+        toast.success(`Product "${data?.title}" created`);
+        // router.push("/dashboard/admin/product");
+        window.location.reload();
       }
     } catch (err) {
-      console.log("err => ", err);
-      toast.error("An error occurred while creating the product");
+      console.log(err);
     }
   };
 
-  const fetchProducts = async (page) => {
+  const fetchProducts = async (page = 1) => {
     try {
       const response = await fetch(`${process.env.API}/product?page=${page}`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
       const data = await response.json();
-      console.log("products in context => ", data?.length);
-
-      setProducts(data.products);
-      setCurrentPage(data.currentPage);
-      setTotalPages(data.totalPages);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
-    }
-  };
-
-  const updateProduct = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.API}/admin/product/${updatingProduct._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatingProduct),
-        }
-      );
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        toast.error(data?.err);
+      } else {
+        setProducts(data?.products);
+        setCurrentPage(data?.currentPage);
+        setTotalPages(data?.totalPages);
       }
-
-      const updatedProduct = await response.json();
-      toast.success(`Product "${updatedProduct?.title}" updated!`);
-      // router.push("/dashboard/admin/products");
-      router.back();
     } catch (err) {
-      console.log("err => ", err);
-      toast.error("An error occurred while updating the product");
-    }
-  };
-
-  const deleteProduct = async () => {
-    try {
-      // delete the product images
-      if (updatingProduct && updatingProduct.images) {
-        // Map through updatingProduct.images and delete each image from Cloudinary
-        for (const image of updatingProduct.images) {
-          deleteImage(image.public_id);
-        }
-      }
-
-      const response = await fetch(
-        `${process.env.API}/admin/product/${updatingProduct._id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const deletedProduct = await response.json();
-      toast.error(`Product "${deletedProduct?.title}" deleted!`);
-      // router.push("/dashboard/admin/products");
-      router.back();
-    } catch (err) {
-      console.log("err => ", err);
-      toast.error("An error occurred while deleting the product");
+      console.log(err);
     }
   };
 
@@ -292,21 +192,86 @@ export const ProductProvider = ({ children }) => {
     try {
       const response = await fetch(`${process.env.API}/product/brands`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        toast.error(data?.err);
+      } else {
+        setBrands(data);
       }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-      const brands = await response.json();
-      setBrands(brands);
+  const updateProduct = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.API}/admin/product/${updatingProduct?._id}`,
+        {
+          method: "PUT",
+          body: JSON.stringify(updatingProduct),
+        }
+      );
 
-      // Update your state or do whatever you need with the brands data
-    } catch (error) {
-      console.error("Error fetching brands:", error);
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data?.err);
+      } else {
+        toast.success(`Product "${data?.title}" updated`);
+        // router.back();
+        window.location.href = "/dashboard/admin/products";
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteProduct = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.API}/admin/product/${updatingProduct?._id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data?.err);
+      } else {
+        toast.success(`Product "${data?.title}" deleted`);
+        // router.back();
+        window.location.reload();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchProductSearchResults = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `${process.env.API}/search/products?productSearchQuery=${productSearchQuery}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok for search results");
+      }
+      const data = await response.json();
+      console.log("search results data => ", data);
+      setProductSearchResults(data);
+      router.push(`/search/products?productSearchQuery=${productSearchQuery}`);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -315,38 +280,41 @@ export const ProductProvider = ({ children }) => {
       value={{
         product,
         setProduct,
-        createProduct,
         products,
         setProducts,
         currentPage,
+        setCurrentPage,
         totalPages,
-        fetchProducts,
+        setTotalPages,
         updatingProduct,
         setUpdatingProduct,
+        uploading,
+        setUploading,
+        uploadImages,
+        deleteImage,
+        createProduct,
+        fetchProducts,
         updateProduct,
         deleteProduct,
-        uploadImages,
-        uploading,
-        deleteImage,
         showImagePreviewModal,
         setShowImagePreviewModal,
-        closeModal,
-        openImagePreviewModal,
         currentImagePreviewUrl,
+        setCurrentImagePreviewUrl,
+        openImagePreviewModal,
+        closeModal,
         showRatingModal,
         setShowRatingModal,
         currentRating,
         setCurrentRating,
         comment,
         setComment,
-        // averageRating,
-        // setAverageRating,
-        brands,
         fetchBrands,
+        brands,
         productSearchQuery,
         setProductSearchQuery,
-        fetchProductSearchResults,
         productSearchResults,
+        setProductSearchResults,
+        fetchProductSearchResults,
       }}
     >
       {children}

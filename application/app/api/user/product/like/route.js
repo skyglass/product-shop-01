@@ -1,64 +1,33 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
 import Product from "@/models/product";
-import { getToken } from "next-auth/jwt";
+import { currentUser } from "@/utils/currentUser";
 
-export async function POST(req) {
+export async function GET(req) {
   await dbConnect();
-
-  const _req = await req.json();
-
-  const { productId } = _req;
-  const token = await getToken({
-    req,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
+  const user = await currentUser();
 
   try {
-    const updated = await Product.findByIdAndUpdate(
-      productId,
-      { $addToSet: { likes: token.user._id } },
-      { new: true }
-    );
-
-    return NextResponse.json(updated, { status: 200 });
+    const likedProducts = await Product.find({ likes: user._id });
+    return NextResponse.json(likedProducts);
   } catch (err) {
-    console.log(err);
-    return NextResponse.json(
-      {
-        err: "Server error. Please try again.",
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ err: err.message }, { status: 500 });
   }
 }
 
 export async function PUT(req) {
   await dbConnect();
-
-  const _req = await req.json();
-
-  const { productId } = _req;
-  const token = await getToken({
-    req,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
+  const user = await currentUser();
+  const { productId } = await req.json();
 
   try {
     const updated = await Product.findByIdAndUpdate(
       productId,
-      { $pull: { likes: token.user._id } },
+      { $addToSet: { likes: user._id } },
       { new: true }
     );
-
-    return NextResponse.json(updated, { status: 200 });
+    return NextResponse.json(updated);
   } catch (err) {
-    console.log(err);
-    return NextResponse.json(
-      {
-        err: "Server error. Please try again.",
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ err: err.message }, { status: 500 });
   }
 }

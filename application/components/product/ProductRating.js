@@ -1,16 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { useRouter, usePathname } from "next/navigation";
 import { useProduct } from "@/context/product";
-import Modal from "@/components/Modal";
 import Stars from "@/components/product/Stars";
 import { calculateAverageRating } from "@/utils/helpers";
+import Modal from "@/components/Modal";
+import { useSession } from "next-auth/react";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
-export default function ProductRating({ product, leaveReview = true }) {
-  // context
+export default function ProductRating({ product, leaveARating = true }) {
   const {
     showRatingModal,
     setShowRatingModal,
@@ -19,17 +18,16 @@ export default function ProductRating({ product, leaveReview = true }) {
     comment,
     setComment,
   } = useProduct();
-  // to show the product average rating
+
   const [productRatings, setProductRatings] = useState(product?.ratings || []);
   const [averageRating, setAverageRating] = useState(0);
-  const [ratingText, setRatingText] = useState("Leave a rating");
-  // console.log("average product ratings => ", productRatings);
 
+  // current user
   const { data, status } = useSession();
+
   const router = useRouter();
   const pathname = usePathname();
 
-  // did current user already left a rating
   const alreadyRated = productRatings?.find(
     (rate) => rate?.postedBy?._id === data?.user?._id
   );
@@ -44,9 +42,6 @@ export default function ProductRating({ product, leaveReview = true }) {
     }
   }, [alreadyRated]);
 
-  console.log("currentRating => ", currentRating);
-  console.log("comment => ", comment);
-
   useEffect(() => {
     if (productRatings) {
       const average = calculateAverageRating(productRatings);
@@ -56,17 +51,14 @@ export default function ProductRating({ product, leaveReview = true }) {
 
   const submitRating = async () => {
     if (status !== "authenticated") {
-      toast.error("Please login to leave a rating");
-      router.push(`/login?callbackUrl=${process.env.NEXTAUTH_URL}${pathname}`);
-
+      toast.error("You must be logged in to leave a rating");
+      router.push(`/login?callbackUrl=${pathname}`);
       return;
     }
+
     try {
       const response = await fetch(`${process.env.API}/user/product/rating`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           productId: product?._id,
           rating: currentRating,
@@ -74,21 +66,15 @@ export default function ProductRating({ product, leaveReview = true }) {
         }),
       });
 
-      if (response.status === 200) {
-        const data = await response.json();
-        setProductRatings(data?.ratings);
-        setShowRatingModal(false);
-        // console.log("product rating response => ", data);
-        toast.success("You left a rating");
-        setRatingText("Update your rating");
-        router.refresh(); // only works in server components
-      } else if (response.status === 400) {
-        const errorData = await response.json();
-        toast.error(errorData.err);
-      } else {
-        // Handle other error scenarios
-        toast.error("An error occurred. Please try again later.");
+      if (!response.ok) {
+        throw new Error("Failed to leave a rating");
       }
+
+      const data = await response.json();
+      setProductRatings(data?.ratings);
+      setShowRatingModal(false);
+      toast.success("Thanks for leaving a rating");
+      router.refresh();
     } catch (err) {
       console.log(err);
       toast.error("Error leaving a rating");
@@ -96,27 +82,17 @@ export default function ProductRating({ product, leaveReview = true }) {
   };
 
   return (
-    <>
-      <div className="d-flex justify-content-between">
-        <small className="text-muted">
-          <Stars rating={averageRating} /> (
-          {productRatings?.length &&
-            `In average ${averageRating?.toFixed(2)} stars out of 5 from ${
-              productRatings?.length
-            } reviews`}
-          )
-        </small>
-
-        {leaveReview && (
-          <small className="text-muted pointer">
-            <span className="pointer" onClick={(e) => setShowRatingModal(true)}>
-              {ratingText}
-            </span>
-          </small>
-        )}
+    <div className="d-flex justify-content-between">
+      <div>
+        <Stars rating={averageRating} />
+        <small className="text-muted"> ({productRatings?.length})</small>
       </div>
 
-      {/* rating modal */}
+      {leaveARating && (
+        <small onClick={() => setShowRatingModal(true)} className="pointer">
+          {alreadyRated ? "Update your rating" : "Leave a rating"}
+        </small>
+      )}
 
       {showRatingModal && (
         <Modal>
@@ -127,7 +103,6 @@ export default function ProductRating({ product, leaveReview = true }) {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
-
           <div className="pointer">
             {[...Array(5)].map((_, index) => {
               const ratingValue = index + 1;
@@ -138,14 +113,6 @@ export default function ProductRating({ product, leaveReview = true }) {
                     ratingValue <= currentRating ? "star-active lead" : "lead"
                   }
                   onClick={() => setCurrentRating(ratingValue)}
-                  role="img"
-                  // aria-label={
-                  //   ratingValue <= currentRating ? (
-                  //     <FaStar className="text-danger" />
-                  //   ) : (
-                  //     <FaRegStar />
-                  //   )
-                  // }
                 >
                   {ratingValue <= currentRating ? (
                     <FaStar className="text-danger" />
@@ -159,12 +126,12 @@ export default function ProductRating({ product, leaveReview = true }) {
 
           <button
             onClick={submitRating}
-            className="btn btn-primary btn-raised mt-3"
+            className="btn btn-primary btn-raised my-3"
           >
             Submit
           </button>
         </Modal>
       )}
-    </>
+    </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useCategory } from "@/context/category";
 
-export default function AdminCreateCategory() {
+export default function CategoryCreate() {
   // context
   const {
     name,
@@ -14,10 +14,10 @@ export default function AdminCreateCategory() {
   } = useCategory();
 
   return (
-    <>
+    <div className="my-5">
       <input
         type="text"
-        value={updatingCategory ? updatingCategory.name : name}
+        value={updatingCategory ? updatingCategory?.name : name}
         onChange={(e) =>
           updatingCategory
             ? setUpdatingCategory({ ...updatingCategory, name: e.target.value })
@@ -25,9 +25,6 @@ export default function AdminCreateCategory() {
         }
         className="form-control p-2 my-2"
       />
-
-      {/* <pre>{JSON.stringify(categoryUpdate, null, 4)}</pre> */}
-
       <div className="d-flex justify-content-between">
         <button
           className={`btn bg-${
@@ -62,6 +59,6 @@ export default function AdminCreateCategory() {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 }
