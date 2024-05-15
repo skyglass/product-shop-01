@@ -5,11 +5,10 @@ const categorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
-      unique: true,
       trim: true,
-      minLength: 1,
-      maxLength: 20,
+      required: true,
+      min: 2,
+      max: 32,
     },
     slug: {
       type: String,
@@ -21,7 +20,7 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-categorySchema.plugin(uniqueValidator, " is already taken.");
+categorySchema.plugin(uniqueValidator);
 
 export default mongoose.models.Category ||
   mongoose.model("Category", categorySchema);

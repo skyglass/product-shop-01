@@ -7,11 +7,14 @@ export async function GET(req) {
 
   try {
     const brands = await Product.distinct("brand");
-    return NextResponse.json(brands);
+
+    return NextResponse.json(brands, { status: 200 });
   } catch (err) {
     console.log(err);
     return NextResponse.json(
-      { err: "An error occurred. Try again" },
+      {
+        err: "Server error. Please try again.",
+      },
       { status: 500 }
     );
   }

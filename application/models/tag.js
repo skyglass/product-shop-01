@@ -1,16 +1,14 @@
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import Category from "@/models/category";
 
 const tagSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
-      unique: true,
       trim: true,
-      minLength: 1,
-      maxLength: 20,
+      required: true,
+      min: 2,
+      max: 32,
     },
     slug: {
       type: String,
@@ -18,7 +16,7 @@ const tagSchema = new mongoose.Schema(
       lowercase: true,
       index: true,
     },
-    parentCategory: {
+    parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       required: true,
@@ -27,6 +25,6 @@ const tagSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-tagSchema.plugin(uniqueValidator, " is already taken.");
+tagSchema.plugin(uniqueValidator);
 
 export default mongoose.models.Tag || mongoose.model("Tag", tagSchema);

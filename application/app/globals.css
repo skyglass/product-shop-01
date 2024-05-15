@@ -1,9 +1,14 @@
 .pointer {
   cursor: pointer;
 }
+.border-20 {
+  border-radius: 20px !important;
+}
+/* make div scrollable*/
 .filter-scroll {
   max-height: 200px;
   overflow-y: scroll;
+  padding: 4px;
 }
 /* hide scrollbar in filters */
 .filter-scroll::-webkit-scrollbar {
@@ -19,3 +24,4 @@
   -webkit-appearance: none;
   margin: 0;
 }
+/* dropdown categories menu */

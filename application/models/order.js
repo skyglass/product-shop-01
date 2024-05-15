@@ -1,21 +1,16 @@
 import mongoose from "mongoose";
-import Product from "@/models/product";
-import User from "@/models/user";
 
-const cartItemSchema = new mongoose.Schema(
-  {
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-    },
-    title: String,
-    slug: String,
-    price: Number,
-    image: String,
-    quantity: Number,
+const cartItemSchema = new mongoose.Schema({
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product", // Reference to the Product model
   },
-  { timestamps: true }
-);
+  title: String, // Add fields you need from the product
+  slug: String,
+  price: Number,
+  image: String,
+  quantity: Number,
+});
 
 const orderSchema = new mongoose.Schema(
   {
@@ -24,6 +19,7 @@ const orderSchema = new mongoose.Schema(
     receipt_url: String,
     refunded: Boolean,
     status: String,
+    refundId: String,
     amount_captured: Number,
     currency: String,
     shipping: {
@@ -46,7 +42,7 @@ const orderSchema = new mongoose.Schema(
       default: "Not Processed",
       enum: [
         "Not Processed",
-        "Processing",
+        "processing",
         "Dispatched",
         "Refunded",
         "Cancelled",

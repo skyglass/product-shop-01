@@ -1,21 +1,26 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
-// import { currentUser } from "@/utils/currentUser";
-import Product from "@/models/product";
 import { getToken } from "next-auth/jwt";
+import Product from "@/models/product";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+// create checkout session
+// https://stripe.com/docs/api/checkout/sessions/create?lang=node
+
 export async function POST(req) {
   await dbConnect();
-  const { cartItems, couponCode } = await req.json();
-  // const user = await currentUser();
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  const user = token?.user;
+  const _req = await req.json();
+  console.log("_req in stripe checkout session api", _req);
+
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
   try {
     const lineItems = await Promise.all(
-      cartItems.map(async (item) => {
+      _req.cartItems.map(async (item) => {
         const product = await Product.findById(item._id);
         const unitAmount = product.price * 100;
         return {
@@ -34,32 +39,47 @@ export async function POST(req) {
     );
 
     const session = await stripe.checkout.sessions.create({
-      line_items: lineItems,
       success_url: `${process.env.DOMAIN}/dashboard/user/stripe/success`,
-      client_reference_id: user._id,
+      client_reference_id: token.user._id,
+      line_items: lineItems,
       mode: "payment",
+      // https://stripe.com/docs/api/payment_methods/create
       payment_method_types: ["card"],
+      // search tax in dashboard under "Pricing catalog"
+      // https://dashboard.stripe.com/test/settings/tax
       payment_intent_data: {
         metadata: {
-          cartItems: JSON.stringify(cartItems),
-          userId: user._id,
+          cartItems: JSON.stringify(_req.cartItems), // Store cart items as metadata
+          userId: token.user._id,
         },
       },
-      shipping_options: [{ shipping_rate: process.env.STRIPE_SHIPPING_RATE }],
+      shipping_options: [
+        {
+          shipping_rate: process.env.STRIPE_SHIPPING_RATE,
+        },
+      ],
       shipping_address_collection: {
-        allowed_countries: ["AU"],
+        allowed_countries: ["AU"], // Only allow shipping to Australia
       },
-      discounts: [{ coupon: couponCode }],
-      customer_email: user.email,
+      // fR6Qwywx
+      discounts: [
+        {
+          coupon: _req.couponCode, // Replace with your coupon code
+        },
+      ],
+      customer_email: token.user.email, // pre-populate customer email in checkout page
     });
 
-    // console.log("stripe checkout session => ", session);
-    return NextResponse.json(session);
+    // console.log("checkout session api => ", session);
+
+    return NextResponse.json(session, { status: 200 });
   } catch (err) {
     console.log(err);
-    return NextResponse.json({
-      err: "Server error. Please try again",
-      status: 500,
-    });
+    return NextResponse.json(
+      {
+        err: "Server error. Please try again.",
+      },
+      { status: 500 }
+    );
   }
 }

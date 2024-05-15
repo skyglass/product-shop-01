@@ -1,18 +1,7 @@
 import mongoose from "mongoose";
-import uniqueValiadtor from "mongoose-unique-validator";
+import uniqueValidator from "mongoose-unique-validator";
 import Category from "@/models/category";
 import Tag from "@/models/tag";
-import User from "@/models/user";
-
-// const likeSchema = new mongoose.Schema(
-//   {
-//     user: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "User",
-//     },
-//   },
-//   { timestamps: true }
-// );
 
 const ratingSchema = new mongoose.Schema(
   {
@@ -23,14 +12,24 @@ const ratingSchema = new mongoose.Schema(
     },
     comment: {
       type: String,
-      maxLength: 200,
+      maxlength: 200,
     },
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
   },
-  { timestamps: true }
+  { timestamps: true } // Add timestamps
+);
+
+const likeSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+  { timestamps: true } // Add timestamps
 );
 
 const productSchema = new mongoose.Schema(
@@ -40,8 +39,7 @@ const productSchema = new mongoose.Schema(
       trim: true,
       required: true,
       unique: true,
-      minLength: 1,
-      maxLength: 160,
+      maxlength: 160,
       text: true, // for text search
     },
     slug: {
@@ -51,22 +49,21 @@ const productSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
       trim: true,
-      minLength: 1,
-      maxLength: 1000000,
+      required: true,
+      maxlength: 2000,
       text: true,
     },
     price: {
       type: Number,
       required: true,
       trim: true,
-      maxLength: 6,
+      maxlength: 32,
       validate: {
         validator: function (value) {
           return value !== 0;
         },
-        message: "Price must be greater than 0",
+        message: "Price must be greater than 0.",
       },
     },
     previousPrice: Number,
@@ -89,11 +86,11 @@ const productSchema = new mongoose.Schema(
     ],
     images: [
       {
-        secure_url: {
+        public_id: {
           type: String,
           default: "",
         },
-        public_id: {
+        secure_url: {
           type: String,
           default: "",
         },
@@ -103,19 +100,36 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // likes: [likeSchema],
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    likes: [likeSchema],
+    // likes: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "User",
+    //   },
+    // ],
     ratings: [ratingSchema],
+    // ratings: [
+    //   {
+    //     rating: {
+    //       type: Number,
+    //       min: 1,
+    //       max: 5,
+    //     },
+    //     comment: {
+    //       type: String,
+    //       maxlength: 200,
+    //     },
+    //     postedBy: {
+    //       type: mongoose.Schema.Types.ObjectId,
+    //       ref: "User",
+    //     },
+    //   },
+    // ],
   },
   { timestamps: true }
 );
 
-productSchema.plugin(uniqueValiadtor, { message: " already exists" });
+productSchema.plugin(uniqueValidator);
 
 export default mongoose.models.Product ||
   mongoose.model("Product", productSchema);

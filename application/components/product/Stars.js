@@ -5,11 +5,14 @@ export default function Stars({ rating }) {
 
   for (let i = 1; i <= 5; i++) {
     if (i <= rating) {
+      // push all gold stars
       stars.push(<FaStar key={i} className="text-danger" />);
-    } else if (i === Math.ceil(rating) && !Number.isInteger(rating)) {
+    } else if (i === Math.ceil(rating) && rating % 1 >= 0.5) {
+      // push half gold star if any
       stars.push(<FaStarHalfAlt key={i} className="text-danger" />);
     } else {
-      stars.push(<FaRegStar key={i} className="text-secondary" />);
+      // push empty star
+      stars.push(<FaRegStar key={i} />);
     }
   }
 

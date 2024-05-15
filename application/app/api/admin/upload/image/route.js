@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import dbConnect from "@/utils/dbConnect";
 import cloudinary from "cloudinary";
 
 // config
@@ -9,26 +10,77 @@ cloudinary.config({
 });
 
 export async function POST(req) {
-  const { image } = await req.json();
+  const _req = await req.json();
+  await dbConnect();
 
   try {
-    const result = await cloudinary.uploader.upload(image);
-    return NextResponse.json({
-      public_id: result.public_id,
-      secure_url: result.secure_url,
-    });
+    const result = await cloudinary.uploader.upload(_req.image);
+    // console.log("image upload response => ", result);
+
+    return NextResponse.json(
+      {
+        public_id: result.public_id,
+        secure_url: result.secure_url,
+      },
+      { status: 200 }
+    );
   } catch (err) {
-    console.log(err);
+    console.log("image upload error => ", err);
+    return NextResponse.json(
+      {
+        err: err.message,
+      },
+      { status: 500 }
+    );
   }
 }
 
 export async function PUT(req) {
-  const { public_id } = await req.json();
+  const _req = await req.json();
+  await dbConnect();
 
   try {
-    const result = await cloudinary.uploader.destroy(public_id);
-    return NextResponse.json({ success: true });
+    const result = await cloudinary.uploader.destroy(_req.public_id);
+    console.log("removed from cloudinary => ", result);
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
-    console.log(err);
+    return NextResponse.json(
+      {
+        err: err.message,
+      },
+      { status: 500 }
+    );
   }
 }
+
+/**
+export async function PUT(req) {
+  const _req = await req.json();
+  await dbConnect();
+
+  try {
+    const result = await cloudinary.uploader.destroy(_req.public_id);
+    console.log("removed from cloudinary => ", result);
+
+    if (result.result === "ok") {
+      return NextResponse.json({ success: true }, { status: 200 });
+    } else {
+      return NextResponse.json(
+        {
+          err: "Error deleting image from Cloudinary",
+          status: 500,
+        },
+        { status: 500 }
+      );
+    }
+  } catch (err) {
+    return NextResponse.json(
+      {
+        err: "Error deleting image from Cloudinary",
+        status: 500,
+      },
+      { status: 500 }
+    );
+  }
+}
+ */

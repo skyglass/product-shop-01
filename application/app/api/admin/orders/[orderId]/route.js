@@ -4,19 +4,24 @@ import Order from "@/models/order";
 
 export async function PUT(req, context) {
   await dbConnect();
-  const { delivery_status } = await req.json();
+  const body = await req.json();
 
   try {
     const order = await Order.findByIdAndUpdate(
       context.params.orderId,
       {
-        delivery_status,
+        delivery_status: body.delivery_status,
       },
       { new: true }
     );
-
-    return NextResponse.json(order);
+    return NextResponse.json(order, { status: 200 });
   } catch (err) {
-    return NextResponse.json(err, { status: 500 });
+    console.log(err);
+    return NextResponse.json(
+      {
+        err: "Server error. Please try again.",
+      },
+      { status: 500 }
+    );
   }
 }

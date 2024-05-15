@@ -1,7 +1,8 @@
+"use client";
 import CategoryCreate from "@/components/category/CategoryCreate";
 import CategoryList from "@/components/category/CategoryList";
 
-export default function AdminCategory() {
+export default function Categories() {
   return (
     <div className="container mb-5">
       <div className="row">
@@ -11,9 +12,9 @@ export default function AdminCategory() {
         </div>
       </div>
 
-      <div className="row">
+      <div className="row mt-5">
         <div className="col">
-          <p className="lead">List of Categories</p>
+          <p className="lead mb-4">List of Categories</p>
           <CategoryList />
         </div>
       </div>

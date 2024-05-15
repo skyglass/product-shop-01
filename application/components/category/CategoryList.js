@@ -1,21 +1,32 @@
 "use client";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { useCategory } from "@/context/category";
 
-export default function CategoryList() {
-  const { fetchCategories, categories, setUpdatingCategory } = useCategory();
+export default function Categories() {
+  // context
+  const { categories, fetchCategories, setUpdatingCategory } = useCategory();
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
   return (
-    <div className="my-5">
-      {categories?.map((c) => (
-        <button className="btn" onClick={() => setUpdatingCategory(c)}>
-          {c.name}
-        </button>
-      ))}
+    <div className="container mb-5">
+      <div className="row">
+        <div className="col">
+          {categories?.map((c) => (
+            <button
+              className="btn"
+              onClick={() => {
+                setUpdatingCategory(c);
+              }}
+            >
+              {c?.name}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
