@@ -59,7 +59,7 @@ export default function Step3({ onPrevStep }) {
           <h2 className="text-center">🔒 💳</h2>
 
           <p className="alert alert-danger">
-            Flat rate $5 shipping fee will apply for all orders Australia wide!
+            Flat rate $5 shipping fee will apply for all orders Country wide!
           </p>
 
           <p className="lead card p-5 bg-secondary text-light">

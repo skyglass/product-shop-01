@@ -25,7 +25,7 @@ export async function POST(req) {
         const unitAmount = product.price * 100;
         return {
           price_data: {
-            currency: "aud",
+            currency: "eur",
             product_data: {
               name: product.title,
               images: [product.images[0].secure_url],
@@ -59,7 +59,7 @@ export async function POST(req) {
         },
       ],
       shipping_address_collection: {
-        allowed_countries: ["AU"], // Only allow shipping to Australia
+        allowed_countries: ["DE"], // Only allow shipping to Germany
       },
       // fR6Qwywx
       discounts: [
