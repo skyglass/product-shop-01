@@ -17,57 +17,89 @@ export default function ProductLike({ product }) {
   const handleLike = async () => {
     if (status !== "authenticated") {
       toast.error("Please login to like");
-      router.push(
-        `/login?callbackUrl=${process.env.API.replace("/api", "")}${pathname}`
-      );
+      router.push(`${process.env.DOMAIN}${pathname}`);
 
       return;
     }
     try {
-      let method = "POST";
-
       if (isLiked) {
         const answer = window.confirm("You liked it. Want to unlike?");
         if (answer) {
-          method = "PUT";
-        } else {
-          return;
+          handleUnlike();
         }
-      }
+      } else {
+        const options = {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: product._id,
+          }),
+        };
 
-      const response = await fetch(`${process.env.API}/user/product/like`, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productId: product._id,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error(`Error occured. Try again.`);
-      }
+        const response = await fetch(
+          `${process.env.API}/user/product/like`,
+          options
+        );
+        if (!response.ok) {
+          throw new Error(
+            `Failed to like: ${response.status} ${response.statusText}`
+          );
+        }
 
-      const data = await response.json();
-      // console.log("product liked response => ", data);
-      setLikes(data?.likes);
-      toast.success(`Product ${method === "POST" ? "liked" : "unliked"}`);
-      router.refresh(); // only works in server components
+        const data = await response.json();
+        // console.log("product liked response => ", data);
+        setLikes(data.likes);
+        toast.success("Product liked");
+        //router.refresh(); // only works in server components
+      }
     } catch (err) {
       console.log(err);
       toast.error("Error liking product");
     }
   };
 
+  const handleUnlike = async () => {
+    try {
+      const options = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: product._id,
+        }),
+      };
+
+      const response = await fetch(
+        `${process.env.API}/user/product/unlike`,
+        options
+      );
+      if (!response.ok) {
+        throw new Error(
+          `Failed to unlike: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      // console.log("product unliked response => ", data);
+      setLikes(data.likes);
+      toast.success("Product unliked");
+        //router.refresh(); // only works in server components
+    } catch (err) {
+      console.log(err);
+      toast.error("Error unliking product");
+    }
+  };
+
   // 🖤
 
   return (
-    <small className="text-muted pointer">
-      {!likes?.length ? (
-        <span onClick={handleLike}>❤️ Be the first person to like</span>
-      ) : (
-        <span onClick={handleLike}>❤️ {likes?.length} people liked</span>
-      )}
-    </small>
+    <>
+      <small className="pointer">
+        <span onClick={handleLike}>❤️ {likes?.length} likes</span>
+      </small>
+    </>
   );
 }

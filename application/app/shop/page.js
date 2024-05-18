@@ -43,7 +43,7 @@ async function getProducts(searchParams) {
   }
 }
 
-export default async function Prducts({ searchParams }) {
+export default async function Products({ searchParams }) {
   // console.log("searchParams in products page => ", searchParams);
   const data = await getProducts(searchParams);
 

@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useRouter, usePathname } from "next/navigation";
-import { set } from "mongoose";
 
 export default function BlogLike({ blog }) {
   const { data, status } = useSession();
@@ -53,7 +52,7 @@ export default function BlogLike({ blog }) {
         // console.log("blog liked response => ", data);
         setLikes(data.likes);
         toast.success("Blog liked");
-        router.refresh(); // only works in server components
+        //router.refresh(); // only works in server components
       }
     } catch (err) {
       console.log(err);
@@ -87,7 +86,7 @@ export default function BlogLike({ blog }) {
       // console.log("blog unliked response => ", data);
       setLikes(data.likes);
       toast.success("Blog unliked");
-      router.refresh();
+      //router.refresh(); // only works in server components
     } catch (err) {
       console.log(err);
       toast.error("Error unliking blog");

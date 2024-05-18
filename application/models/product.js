@@ -100,13 +100,11 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    likes: [likeSchema],
-    // likes: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User",
-    //   },
-    // ],
+    //likes: [likeSchema],
+    likes: {
+      type: [mongoose.Schema.Types.ObjectId],
+      default: [],
+    },
     ratings: [ratingSchema],
     // ratings: [
     //   {
