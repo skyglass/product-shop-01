@@ -100,29 +100,11 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    //likes: [likeSchema],
     likes: {
       type: [mongoose.Schema.Types.ObjectId],
       default: [],
     },
     ratings: [ratingSchema],
-    // ratings: [
-    //   {
-    //     rating: {
-    //       type: Number,
-    //       min: 1,
-    //       max: 5,
-    //     },
-    //     comment: {
-    //       type: String,
-    //       maxlength: 200,
-    //     },
-    //     postedBy: {
-    //       type: mongoose.Schema.Types.ObjectId,
-    //       ref: "User",
-    //     },
-    //   },
-    // ],
   },
   { timestamps: true }
 );

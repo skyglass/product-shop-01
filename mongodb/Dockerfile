@@ -1,8 +1,8 @@
 FROM mongo:latest
 
 # Set environment variables
-ENV DB_NAME=foodfinder
-ENV MONGO_INITDB_DATABASE=foodfinder
+ENV DB_NAME=productshop
+ENV MONGO_INITDB_DATABASE=productshop
 
 # Expose port
 EXPOSE 27017
