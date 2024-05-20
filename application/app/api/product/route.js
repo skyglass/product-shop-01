@@ -49,7 +49,7 @@ export async function GET(req) {
     const allProducts = await Product.find(filter)
       .populate("category", "name")
       .populate("tags", "name")
-      .sort({ createdAt: "-1" });
+      .sort({ createdAt: -1 });
 
     console.log("allProducts.length ************* => ", allProducts.length);
 
@@ -156,7 +156,7 @@ export async function GET(req) {
 //     const allProducts = await Product.find(filter)
 //       .populate("category", "name")
 //       .populate("tags", "name")
-//       .sort({ createdAt: "-1" });
+//       .sort({ createdAt: -1 });
 
 //     console.log("allProducts.length ************* => ", allProducts.length);
 

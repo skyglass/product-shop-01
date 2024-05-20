@@ -75,7 +75,7 @@
 - create `.env.local` file in `application` folder and provide following parameters:
 
 ```
-MONGO_URI=mongodb://mongodb:27017/foodfinder
+MONGO_URI=mongodb://mongodb:27017/productshop
 GITHUB_CLIENT_ID=...
 GITHUB_CLIENT_SECRET=...
 NEXTAUTH_SECRET=60477026caac35080b244a879eb84873
@@ -122,8 +122,6 @@ az aks get-credentials --resource-group {app_name} --name {app_name}
 ```
 docker login {login_server}
 ```
-
-- run `docker images` and make sure that `docker images` returns docker images from your container registry (should be 0 images when login first time)
 
 - you can find docker login server, username and password in Azure Cloud (go to Container Registry -> Settings -> Access Keys)
 

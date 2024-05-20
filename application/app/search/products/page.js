@@ -31,7 +31,7 @@ export default function ProductsSearchPage() {
   const fetchProductResultsOnLoad = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/search/products?productSearchQuery=${query}`
+        `${process.env.API}/search/products?productSearchQuery=${query}`
       );
 
       if (!response.ok) {

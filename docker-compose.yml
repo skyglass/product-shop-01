@@ -30,7 +30,7 @@ services:
         build: 
             context: ./application
             dockerfile: Dockerfile-dev
-        container_name: productshop-application
+        container_name: application
         # image: node:lts-alpine
         # configure working directory for installing next.js
         # working_dir: /home/node/code/

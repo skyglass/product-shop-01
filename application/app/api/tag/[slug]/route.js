@@ -15,7 +15,7 @@ export async function GET(req, context) {
       .populate("category", "name")
       .limit(12)
       .sort({
-        createdAt: "-1",
+        createdAt: -1,
       });
 
     return NextResponse.json({ tag, products });

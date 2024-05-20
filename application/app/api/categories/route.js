@@ -6,7 +6,7 @@ export async function GET(req) {
   await dbConnect();
 
   try {
-    const categories = await Category.find({}).sort({ createdAt: "-1" });
+    const categories = await Category.find({}).sort({ createdAt: -1 });
 
     return NextResponse.json(categories, { status: 200 });
   } catch (err) {

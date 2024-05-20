@@ -3,8 +3,18 @@
 #
 # Usage:
 #
-#   ./scripts/production-kub/deploy.sh
+#   ./scripts/production/deploy.sh
 #
+
+# Source the .env.prod file to load the environment variables
+if [ -f .env.prod ]; then
+  set -o allexport
+  source .env.prod
+  set +o allexport
+else
+  echo ".env.prod file not found"
+  exit 1
+fi
 
 set -u # or set -o nounset
 : "$CONTAINER_REGISTRY"
@@ -15,7 +25,7 @@ set -u # or set -o nounset
 docker build -t $CONTAINER_REGISTRY/mongodb:1 --file ../../mongodb/Dockerfile ../../mongodb
 docker push $CONTAINER_REGISTRY/mongodb:1
 
-docker build -t $CONTAINER_REGISTRY/application:1 --file ../../application/Dockerfile-prod ../../application
+docker build -t $CONTAINER_REGISTRY/application:1 --file ../../application/Dockerfile-prod --build-arg DOMAIN_ARG=$DOMAIN --build-arg API_ARG=$API ../../application 
 docker push $CONTAINER_REGISTRY/application:1
 
 # 

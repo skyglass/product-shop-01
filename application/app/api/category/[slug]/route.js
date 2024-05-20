@@ -11,7 +11,7 @@ export async function GET(req, context) {
     const category = await Category.findOne({ slug });
 
     const products = await Product.find({ category }).limit(12).sort({
-      createdAt: "-1",
+      createdAt: -1,
     });
 
     return NextResponse.json({ category, products });

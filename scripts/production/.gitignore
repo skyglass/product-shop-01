@@ -1,0 +1,6 @@
+# prod env files
+.env*.prod
+
+.DS_Store
+
+/build

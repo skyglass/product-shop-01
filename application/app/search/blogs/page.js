@@ -27,7 +27,7 @@ export default function SearchPage() {
   const fetchResultsOnLoad = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/search?searchQuery=${query}`
+        `${process.env.API}/search?searchQuery=${query}`
       );
 
       if (!response.ok) {

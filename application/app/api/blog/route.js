@@ -25,7 +25,7 @@ export async function GET(req) {
       .populate("postedBy", "name")
       .skip(skip)
       .limit(pageSize)
-      .sort({ createdAt: "-1" }); // Retrieve the paginated blogs
+      .sort({ createdAt: -1 }); // Retrieve the paginated blogs
 
     console.log(blogs.length);
 

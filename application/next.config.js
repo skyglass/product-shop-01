@@ -6,6 +6,7 @@
  */
 
 const nextConfig = {
+  output: "standalone",
   swcMinify: false,
   serverRuntimeConfig: {
     // timeout: 120000, // 2 minutes (adjust as needed)

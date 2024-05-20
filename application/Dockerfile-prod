@@ -13,6 +13,10 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ARG HOST_API
 ENV NEXT_PUBLIC_HOST_API=${HOST_API}
+ARG DOMAIN_ARG
+ARG API_ARG
+ENV DOMAIN=${DOMAIN_ARG}
+ENV API=${API_ARG}
 RUN NODE_ENV=production npm run build && npm prune --production
 
 # Stage 3

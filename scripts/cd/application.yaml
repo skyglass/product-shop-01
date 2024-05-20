@@ -23,20 +23,36 @@ spec:
         image: $CONTAINER_REGISTRY/application:$VERSION
         imagePullPolicy: Always
         env:
-        - name: CHOKIDAR_USEPOLLING
-          value: "true"
-        - name: CHOKIDAR_INTERVAL
-          value: "100"
-        - name: MONGO_URI
-          value: "mongodb://mongodb:27017/foodfinder"
-        - name: GITHUB_CLIENT_ID
-          value: "$AUTH_CLIENT_ID"
-        - name: GITHUB_CLIENT_SECRET
-          value: "$AUTH_CLIENT_SECRET"
+        - name: DOMAIN
+          value: "$DOMAIN"
+        - name: API
+          value: "$API"
+        - name: DB_URI
+          value: "$DB_URI"
+        - name: GOOGLE_CLIENT_ID
+          value: "$GOOGLE_CLIENT_ID"
+        - name: GOOGLE_CLIENT_SECRET
+          value: "$GOOGLE_CLIENT_SECRET"
         - name: NEXTAUTH_SECRET
-          value: "60477026caac35080b244a879eb84873"
+          value: "$NEXTAUTH_SECRET"
         - name: NEXTAUTH_URL
-          value: "http://172.211.209.153"
+          value: "$NEXTAUTH_URL"          
+        - name: CLOUDINARY_CLOUD_NAME
+          value: "$CLOUDINARY_CLOUD_NAME"
+        - name: CLOUDINARY_API_KEY
+          value: "$CLOUDINARY_API_KEY"
+        - name: CLOUDINARY_API_SECRET
+          value: "$CLOUDINARY_API_SECRET"
+        - name: STRIPE_API_KEY
+          value: "$STRIPE_API_KEY"
+        - name: STRIPE_SECRET_KEY
+          value: "$STRIPE_SECRET_KEY"
+        - name: STRIPE_TAX_RATE
+          value: "$STRIPE_TAX_RATE"
+        - name: STRIPE_SHIPPING_RATE
+          value: "$STRIPE_SHIPPING_RATE"
+        - name: STRIPE_WEBHOOK_SECRET
+          value: "$STRIPE_WEBHOOK_SECRET"
 ---
 apiVersion: v1
 kind: Service

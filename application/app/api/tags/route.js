@@ -8,7 +8,7 @@ export async function GET(req) {
   try {
     const tags = await Tag.find({})
       .populate("parent", "name")
-      .sort({ createdAt: "-1" });
+      .sort({ createdAt: -1 });
 
     return NextResponse.json(tags, { status: 200 });
   } catch (err) {

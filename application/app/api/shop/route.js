@@ -19,7 +19,7 @@ export async function GET(req) {
     const products = await Product.find({})
       .skip(skip)
       .limit(pageSize)
-      .sort({ createdAt: "-1" });
+      .sort({ createdAt: -1 });
 
     return NextResponse.json(
       {
