@@ -16,5 +16,5 @@ else
   exit 1
 fi
 
-kubectl delete -f mongodb.yaml
-envsubst < application.yaml | kubectl delete -f -
+kubectl delete -f mongodb.yaml --namespace public-ingress
+envsubst < application.yaml | kubectl delete -f - --namespace public-ingress
