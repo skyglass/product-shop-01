@@ -13,16 +13,11 @@ export async function POST(req) {
 
   try {
     // Construct the event using the Stripe SDK
-    //console.log("*******_raw********", err);
-    //console.log("*******sig********", err);
-    //console.log("*******secret********", process.env.STRIPE_WEBHOOK_SECRET);
     const event = stripe.webhooks.constructEvent(
       _raw,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
-
-    //console.log("*******event********", event);
 
     // Handle the event
     switch (event.type) {

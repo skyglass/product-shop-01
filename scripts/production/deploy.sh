@@ -25,7 +25,10 @@ set -u # or set -o nounset
 docker build -t $CONTAINER_REGISTRY/mongodb:1 --file ../../mongodb/Dockerfile ../../mongodb
 docker push $CONTAINER_REGISTRY/mongodb:1
 
-docker build -t $CONTAINER_REGISTRY/application:1 --file ../../application/Dockerfile-prod --build-arg DOMAIN_ARG=$DOMAIN --build-arg API_ARG=$API ../../application 
+ENV_FILE_SRC=./.env.prod
+ENV_FILE_DEST=../../application/.env.prod
+cp $ENV_FILE_SRC $ENV_FILE_DEST
+docker build -t $CONTAINER_REGISTRY/application:1 --file ../../application/Dockerfile-prod ../../application
 docker push $CONTAINER_REGISTRY/application:1
 
 # 
