@@ -48,9 +48,9 @@
 
 - Go to Google Cloud Console -> APIs and Services -> Credentials -> Create Credentials
 
-- Make sure that URLs start with EXTERNAL_IP or DOMAIN of your application service (see `Azure Production Environment Setup` for more details)
+- Make sure that one of the URLs start with DOMAIN or EXTERNAL_IP of your application service (see `Azure Production Environment Setup` for more details)
 
-- If you test locally, make sure that URLs start with `http://localhost:3000/` (see `Local Docker Environment Setup` for more details)
+- If you test locally, make sure that one of the URLs start with `http://localhost:3000/` (see `Local Docker Environment Setup` for more details)
 
 
 ### Step-05: Prepare API Source Code and Github Actions Workflow:
@@ -209,7 +209,7 @@ STRIPE_WEBHOOK_SECRET="$STRIPE_WEBHOOK_SECRET"
 - NEXTAUTH_SECRET can be generated with the command `openssl rand -base64 32`
 - GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET can be found in the settings of created Google OAuth Client
 - If you need help on other values, see more details in the course: https://www.udemy.com/course/react-nextjs-ecommerce/?couponCode=LEADERSALE24B
-- 
+ 
 
 - register your domain and enable TLS on AKS Ingress with Lestencrypt: https://medium.com/@jainchirag8001/tls-on-aks-ingress-with-letsencrypt-f42d65725a3
 - Make sure that you provide your email for CA cluster issuer Kubernetes resource (see more details in the article)
