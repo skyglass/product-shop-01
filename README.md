@@ -251,8 +251,6 @@ Make sure that you added Google OAuth App URL that starts with your registered D
 
 - cd to `scripts/cd` folder
 
-- replace `NEXTAUTH_URL`in `application.yaml` with `EXTERNAL_IP` of `application` service (run `kubectl get svc` to find this value)
-
 - create the following Github Secrets (Go to Your Repository -> Settings -> Secrets and Variables -> Actions -> New Repository Secret):
 
 ```
