@@ -249,8 +249,6 @@ Make sure that you added Google OAuth App URL that starts with your registered D
 
 ## Github Actions Deployment Pipeline Setup
 
-- cd to `scripts/cd` folder
-
 - create the following Github Secrets (Go to Your Repository -> Settings -> Secrets and Variables -> Actions -> New Repository Secret):
 
 ```
