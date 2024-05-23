@@ -54,13 +54,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v3
 
-      - name: Set execute permissions
-        run: |
-          chmod +x ./scripts/cd/build-env.sh
-          chmod +x ./scripts/cd/build-image.sh
-          chmod +x ./scripts/cd/push-image.sh
-          chmod +x ./scripts/cd/deploy.sh
-
       #
       # Builds Environment Variables File
       #

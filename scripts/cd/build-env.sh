@@ -1,5 +1,5 @@
 #
-# Builds Environment Variables file for Docker Image.
+# Builds Environment Variables file for Docker Image
 #
 #       ./scripts/cd/build-env.sh
 #
