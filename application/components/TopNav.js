@@ -22,7 +22,7 @@ export default function TopNav() {
   return (
     <nav className="nav shadow justify-content-between mb-3 pt-3">
       <Link className="nav-link" href="/">
-        🛒 Sky Composer
+        🛒 NextEcom
       </Link>
 
       <Link className="nav-link" href="/products">
