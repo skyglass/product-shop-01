@@ -23,38 +23,7 @@ spec:
         image: $CONTAINER_REGISTRY/application:1
         imagePullPolicy: Always
         ports:
-        - containerPort: 3000      
-        env:
-        - name: DOMAIN
-          value: "$DOMAIN"
-        - name: API
-          value: "$API"
-        - name: DB_URI
-          value: "$DB_URI"
-        - name: GOOGLE_CLIENT_ID
-          value: "$GOOGLE_CLIENT_ID"
-        - name: GOOGLE_CLIENT_SECRET
-          value: "$GOOGLE_CLIENT_SECRET"
-        - name: NEXTAUTH_SECRET
-          value: "$NEXTAUTH_SECRET"
-        - name: NEXTAUTH_URL
-          value: "$NEXTAUTH_URL"          
-        - name: CLOUDINARY_CLOUD_NAME
-          value: "$CLOUDINARY_CLOUD_NAME"
-        - name: CLOUDINARY_API_KEY
-          value: "$CLOUDINARY_API_KEY"
-        - name: CLOUDINARY_API_SECRET
-          value: "$CLOUDINARY_API_SECRET"
-        - name: STRIPE_API_KEY
-          value: "$STRIPE_API_KEY"
-        - name: STRIPE_SECRET_KEY
-          value: "$STRIPE_SECRET_KEY"
-        - name: STRIPE_TAX_RATE
-          value: "$STRIPE_TAX_RATE"
-        - name: STRIPE_SHIPPING_RATE
-          value: "$STRIPE_SHIPPING_RATE"
-        - name: STRIPE_WEBHOOK_SECRET
-          value: "$STRIPE_WEBHOOK_SECRET"
+        - containerPort: 3000
 
 ---
 apiVersion: v1
