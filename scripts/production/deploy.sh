@@ -19,6 +19,13 @@ fi
 set -u # or set -o nounset
 : "$CONTAINER_REGISTRY"
 
+if envsubst < ../../application/.env.prod > ../../application/.env.prod.subst; then
+    echo "File .env.prod.subst created successfully."
+else
+    echo "Failed to create .env.prod.subst file."
+    exit 1
+fi
+
 #
 # Build Docker images.
 #
