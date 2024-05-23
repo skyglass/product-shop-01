@@ -1,7 +1,7 @@
-### 📖 Azure Startup Template For Cloud-Native Microservices
+### 📖 Cloud-Native Startup Template
 
 <ul style="list-style-type:disc">
-  <li>📖 This <b>Azure Full-Stack Developer Template</b> provides fully functional Development and Production Environment</li>
+  <li>📖 This <b>Cloud-Native Full-Stack Developer Template</b> provides fully functional Development and Production Environment</li>
     <li>📖 <b>Next.js</b> Source Code</li>
     <li>📖 Local <b>Docker</b> Environment</li>
     <li>📖 <b>Github Actions</b> CI/CD <b>GitOps</b> pipeline</li>
@@ -13,11 +13,9 @@
     <li>✅ <b>Node.js Server</b></li>    
     <li>✅ <b>MongoDB</b></li>
     <li>✅ <b>Mongoose MongoDB Object Modeling for Node.js</b></li>        
-    <li>✅ <b>GraphQL</b></li>
-    <li>✅ <b>Apollo GraphQL Server</b></li>
     <li>✅ <b>NextAuth.js Authentication for Next.js</b></li>
-    <li>✅ <b>Github OAuth Client for NextAuth.js Authentication</b></li>
-    <li>✅ <b>Github Authorization Server</b></li>
+    <li>✅ <b>Google OAuth Client for NextAuth.js Authentication</b></li>
+    <li>✅ <b>Google Authorization Server</b></li>
     <li>✅ <b>Terraform</b></li>
     <li>✅ <b>Kubernetes</b></li>
     <li>✅ <b>Github Actions</b></li>
@@ -29,8 +27,7 @@
 
 ### 📖 Links
 
-- `The Complete Developer`Book: https://www.usemodernfullstack.dev/
-- The book is also available with O'Reilly subscription: https://learning.oreilly.com/library/view/the-complete-developer/9781098168810/
+- `Next.js React Ultimate Ecommerce Development` Udemy Course: https://www.udemy.com/course/react-nextjs-ecommerce/?couponCode=LEADERSALE24B
 
 
 ## 📖 Step By Step Guide
@@ -47,11 +44,11 @@
 
 - make sure you have your own Github Account
 
-### Step-04: Create a GitHub OAuth App
+### Step-04: Create a Google OAuth App
 
-- Go to Github -> Settings -> Developer Settings -> OAuth Apps -> New OAuth App
+- Go to Google Cloud Console -> APIs and Services -> Credentials -> Create Credentials
 
-- Make sure that URLs start with EXTERNAL_IP of your application service (see `Azure Production Environment Setup` for more details)
+- Make sure that URLs start with EXTERNAL_IP or DOMAIN of your application service (see `Azure Production Environment Setup` for more details)
 
 - If you test locally, make sure that URLs start with `http://localhost:3000/` (see `Local Docker Environment Setup` for more details)
 
@@ -60,26 +57,43 @@
 
 - Edit "**.github/workflows/application.yaml**" file: replace "**master**" with the name of your main branch (you can change default main branch name in github repository settings)
 
-- Edit "**scripts/cd/application.yaml**" file: replace "**NEXTAUTH_URL**" with EXTERNAL_IP of your application service (see `Azure Production Environment` Setup for more details)
-
-- Edit "**scripts/production/application.yaml**" file: replace "**NEXTAUTH_URL**" with EXTERNAL_IP of your application service (see `Azure Production Environment` Setup for more details)
-
+- Edit "**.github/workflows/application.yaml**" file: replace "**master**" with the name of your main branch (you can change default main branch name in github repository settings)
 
 
 ## Local Docker Environment Setup:
 
-- Create a GitHub OAuth App (Github -> Settings -> Developer Settings -> OAuth Apps -> New OAuth App)
+- Create a Google OAuth App (Google Cloud Console -> APIs and Services -> Credentials -> Create Credentials)
 
 - Make sure that URLs start with `http://localhost:3000/`
 
 - create `.env.local` file in `application` folder and provide following parameters:
 
 ```
-MONGO_URI=mongodb://mongodb:27017/productshop
-GITHUB_CLIENT_ID=...
-GITHUB_CLIENT_SECRET=...
-NEXTAUTH_SECRET=60477026caac35080b244a879eb84873
+DOMAIN="http://localhost:3000"
+API="http://localhost:3000/api"
+NEXTAUTH_URL="http://localhost:3000"
+
+DB_URI="mongodb://mongodb:27017/productshop"
+GOOGLE_CLIENT_ID="$GOOGLE_CLIENT_ID"
+GOOGLE_CLIENT_SECRET="$GOOGLE_CLIENT_SECRET"
+NEXTAUTH_SECRET="$NEXTAUTH_SECRET"
+CLOUDINARY_CLOUD_NAME="$CLOUDINARY_CLOUD_NAME"
+CLOUDINARY_API_KEY="$CLOUDINARY_API_KEY"
+CLOUDINARY_API_SECRET="$CLOUDINARY_API_SECRET"
+
+STRIPE_API_KEY="$STRIPE_API_KEY"
+STRIPE_SECRET_KEY="$STRIPE_SECRET_KEY"
+STRIPE_TAX_RATE="$STRIPE_TAX_RATE"
+STRIPE_SHIPPING_RATE="$STRIPE_SHIPPING_RATE"
+STRIPE_WEBHOOK_SECRET="$STRIPE_WEBHOOK_SECRET"
 ```
+
+- NEXTAUTH_SECRET can be generated with the command `openssl rand -base64 32`
+- GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET can be found in the settings of created Google OAuth Client
+- If you need help on other values, see more details in this course: https://www.udemy.com/course/react-nextjs-ecommerce/?couponCode=LEADERSALE24B
+- I strongly recommend you finish this course first, before following this guide!
+- This guide will only help you to deploy the application to the azure cloud kubernetes cluster and enable github actions cd pipeline
+- All information about configuring Cloudinary, Stripe Payment Infrastructure, Discounts, Coupons, Tax Rate, Shipping Rate, Sales Prices, Next.js and React development, and so on, is perfectly explained in this course!
 
 ```
 docker-compose up -d
@@ -87,10 +101,30 @@ docker-compose up -d
 
 - this script will build docker images and start environment with your code changes
 
-- open `localhost:3000` in your Browser and make sure that `Sign In` with Github Credentials works and you can see the test data
+- open `localhost:3000` in your Browser and make sure that `Sign In` with Google Credentials works and you can see the test data
 
+- install Stripe CLI on your Operating System and configure WebHooks in your Stripe Account (see the course for more details)
 
-- Congratulations! You successfuly tested `Food Finder UI` locally!
+```
+stripe login
+stripe listen --forward-to localhost:3000/api/webhook
+```
+
+- These commands will start local stripe webhook listener
+
+- Add any product to the cart, apply coupon and click "Place Order" button
+
+- You will be redirected to the Stripe Page, where you should provide payment and shipment details
+
+- Use "magic" payment card with number 4242 4242 4242 4242 for unlimited payment. :)
+
+- If the payment is sucessful, you will be redirected back to the shop page
+
+- Click "View Order Status". If stripe webhooks were configured correctly, you should see "Order Receipt" information.
+
+- Congratulations! Your order was successfully saved in MongoDB database!
+
+- Congratulations! You successfuly tested `Product Shope UI` locally!
 
 
 ## Azure Production Environment Setup:
