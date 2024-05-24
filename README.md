@@ -204,7 +204,7 @@ STRIPE_SHIPPING_RATE="$STRIPE_SHIPPING_RATE"
 STRIPE_WEBHOOK_SECRET="$STRIPE_WEBHOOK_SECRET"
 ```
 
-- Don't Panic! `.env.prod` file is included to .gitignore. You will not reveal your secrets with git commit! :)
+- Don't Panic! `scripts/production/.env.prod` file is included to .gitignore. You will not reveal your secrets with git commit! :)
 - Make sure that you set your own values for CONTAINER_REGISTRY, EMAIL_ADDRESS, DOMAIN, API and NEXTAUTH_URL (use your own registered domain, azure container registry address and e-mail)
 - NEXTAUTH_SECRET can be generated with the command `openssl rand -base64 32`
 - GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET can be found in the settings of created Google OAuth Client
@@ -222,10 +222,11 @@ STRIPE_WEBHOOK_SECRET="$STRIPE_WEBHOOK_SECRET"
 
 - this script will build docker images, push them to container registry and deploy images to kubernetes cluster
 
-- Warning! Application Docker image is built with secret Environment Variables from generated `.env.prod.subst`
-- `.env.prod.subst` is included in .gitignore, but anyone who has access to docker image can find the secret values!
+- Warning! Application Docker image is built with secret Environment Variables from generated `application/.env.prod.subst`
+- `application/.env.prod.subst` is included in .gitignore, but anyone who has access to docker image can find the secret values!
 - Make sure that docker images are stored in private Container Registry and never shared publicly!
 - In this guide we use Azure Private Container Registry
+- Don't Panic! `application/.env.prod` is NOT included in .gitignore, which is done on purpose! There is no secret information in this file. It is only a template to generate `application/.env.prod.subst`. Please, don't include it in .gitignore, or it will break github actions pipeline.
 
 - run `kubectl get pods` and make sure that `application` and `mongodb` containers are RUNNING
 
@@ -297,7 +298,3 @@ STRIPE_WEBHOOK_SECRET="$STRIPE_WEBHOOK_SECRET"
 - open https link for your registered domain in your Browser and make sure that you can see `NextEcom 2` title on the top left
 
 - Congratulations! You successfuly tested `Product Shop UI` code changes with Github Actions Deployment Pipeline!
-
-
-
-
