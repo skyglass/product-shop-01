@@ -53,12 +53,12 @@ jobs:
       
       # Checks-out your repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v3
-
+     
       #
       # Builds Environment Variables File
       #
       - name: Build Environment Variables File
-        run: ./scripts/cd/build-env.sh      
+        run: ./scripts/cd/build-env.sh 
 
       #
       # Builds the Docker image.
@@ -71,6 +71,12 @@ jobs:
       #
       - name: Publish
         run: ./scripts/cd/push-image.sh
+
+      #
+      # Delete Environment Variables File
+      #
+      - name: Delete Environment Variables File
+        run: ./scripts/cd/delete-env.sh
 
       #
       # Installs Kubectl and connects it to the cluster.

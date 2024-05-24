@@ -43,3 +43,10 @@ docker push $CONTAINER_REGISTRY/application:1
 
 envsubst < mongodb.yaml | kubectl apply -f -
 envsubst < application.yaml | kubectl apply -f -
+
+if rm ../../application/.env.prod.subst; then
+    echo "File .env.prod.subst deleted successfully."
+else
+    echo "Failed to delete .env.prod.subst file."
+    exit 1
+fi
