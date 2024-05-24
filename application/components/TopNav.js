@@ -22,7 +22,7 @@ export default function TopNav() {
   return (
     <nav className="nav shadow justify-content-between mb-3 pt-3">
       <Link className="nav-link" href="/">
-        🛒 NextEcom Test 2
+        🛒 NextEcom
       </Link>
 
       <Link className="nav-link" href="/products">

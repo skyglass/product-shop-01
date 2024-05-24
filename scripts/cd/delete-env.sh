@@ -1,5 +1,5 @@
 #
-# Deletes Environment Variables file for Docker Image
+## Deletes Environment Variables file for Docker Image
 #
 #       ./scripts/cd/delete-env.sh
 #
