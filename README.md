@@ -16,6 +16,11 @@
     <li>✅ <b>NextAuth.js Authentication for Next.js</b></li>
     <li>✅ <b>Google OAuth Client for NextAuth.js Authentication</b></li>
     <li>✅ <b>Google Authorization Server</b></li>
+    <li>✅ <b>Stripes Payment Infrastructure</b></li>
+    <li>✅ <b>Cloudinary Image Upload Service</b></li>
+    <li>✅ <b>Nginx Ingress Controller</b></li>
+    <li>✅ <b>Lets Encrypt Certificate Authority</b></li>
+    <li>✅ <b>Azure Cloud</b></li> 
     <li>✅ <b>Terraform</b></li>
     <li>✅ <b>Kubernetes</b></li>
     <li>✅ <b>Github Actions</b></li>
